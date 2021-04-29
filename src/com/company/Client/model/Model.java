@@ -7,13 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Model {
+    int userId;
     String userName;
-    UsersOnline userList;
+    List userList;
 
     public Model(String userName){
 
         this.userName = userName;
-        this.userList = new UsersOnline();
+        this.userList = new ArrayList();
         //userList.add(userName);
     }
 
@@ -21,7 +22,18 @@ public class Model {
         return this.userName;
     }
 
-    public void NewUserConnected(UsersOnline object){
-        userList = object;
+    public void SetUserList(List userList){
+        this.userList = userList;
+    }
+
+    public List GetUserList(){
+        return this.userList;
+    }
+
+    public void SetUserId(int userId){
+        this.userId = userId;
+    }
+    public int GetUserId(){
+        return this.userId;
     }
 }

@@ -7,26 +7,27 @@ import java.util.Map;
 
 public class Server {
 
-    private ServerUsers serverUsers;
-    private int port;
+   private int port;
 
 
     Server(int port){
         this.port = port;
-        //ServerUsers serverUsers = ServerUsers.getInstance();
-
+        UserId userIdGetter = UserId.getInstance();
         try(ServerSocket serverSocket = new ServerSocket(this.port)) {
 
             while(true){
+                System.out.println("tjoho");
                 Socket socket = serverSocket.accept();
-                User user = new User(socket);
-                Thread userThread = new Thread(user);
-                userThread.start();
+                //if(socket != null) {
+                    int userId = userIdGetter.GetNextId();
+                    User user = new User(userId, socket);
+                    ServerUsers.getInstance().Add(userId, user);
+                    user.start();
+                //}
             }
         } catch (IOException e) {
             System.out.println("Server failed to connect");
         }
-
     }
 
     public static void main(String[] args){
