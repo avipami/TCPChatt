@@ -2,7 +2,7 @@ package com.company.Client;
 
 import com.company.Client.controller.Controller;
 import com.company.Client.model.Model;
-import com.company.Client.view.Viewen;
+import com.company.Client.view.View;
 
 import javax.swing.*;
 
@@ -18,7 +18,7 @@ public class Client {
 
 
 
-        new Viewen(user, controller);
+        new View(user, controller);
 
 
     }

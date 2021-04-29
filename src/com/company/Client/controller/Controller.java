@@ -1,19 +1,14 @@
 package com.company.Client.controller;
 
+import com.company.*;
 import com.company.Client.model.Model;
-import com.company.Client.view.Viewen;
-import com.company.LoginObject;
-import com.company.LogoutObject;
-import com.company.MessageObject;
-import com.company.UsersOnline;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class Controller implements Runnable {
@@ -36,33 +31,35 @@ public class Controller implements Runnable {
     }
 
     @Override
-    public void run(){
+    public void run() {
         LoginObject login = new LoginObject(this.user.GetName());
         SendObject(login);
-        while(true){
+
+        while (true) {
             try {
                 Object object;
                 object = objectInputStream.readObject();
 
-                if (object instanceof LoginObject) {
-                   // user.NewUserConnected((LoginObject) object);
-                    System.out.println(((LoginObject) object).GetUserName());
-                    MUserList.getInstance().append(((LoginObject) object).GetUserName()+"\n");
-                    //this.name = ((LoginObject) object).getUserName();
-                    //SendObject(object);
+                if (object instanceof ConnectedObject) {
+                    MUserList.getInstance().setText("");
+                    user.SetUserList(((ConnectedObject) object).GetUsersOnline());
+                    for (String userName : (ArrayList<String>) user.GetUserList()) {
+                        if (!(userName == (null)))
+                            MUserList.getInstance().append(userName + "\n");
+                    }
                 }
-                if(object instanceof MessageObject){
+
+                if (object instanceof LoginObject) {
+                    System.out.println(((LoginObject) object).GetUserName());
+                    MUserList.getInstance().append(((LoginObject) object).GetUserName() + "\n");
+                }
+
+                if (object instanceof MessageObject) {
                     System.out.println(((MessageObject) object).GetMessage());
                     MTextArea.getInstance().append(((MessageObject) object).GetMessage() + "\n");
+                    MTextArea.getInstance().setCaretPosition(MTextArea.getInstance().getDocument().getLength());
+                }
 
-                    //SendObject(object);
-                }
-                if (object instanceof LogoutObject){
-                    SendObject(object);
-                }
-                if (object instanceof UsersOnline){
-
-                }
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (ClassNotFoundException e) {
@@ -77,9 +74,5 @@ public class Controller implements Runnable {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public Socket GetSocket(){
-        return this.socket;
     }
 }
